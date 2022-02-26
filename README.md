@@ -5,7 +5,15 @@ A python command-line tool for [AniList](https://anilist.co) , made by [@ayushse
 
 ## Setup/Installation
 
-Soon
+```
+pip install anilist-man
+```
+
+```
+$ anilist-man --help
+```
+
+For more about the command-line
 
 ---
 
