@@ -16,12 +16,12 @@ from anilist_man.query_func import QueryFunctions
 app = typer.Typer()
 #Print all files in data folder
 try:
-    with open("anilist_man/token.txt", "r") as f:
+    with open("token.txt", "r") as f:
         token = f.read()
 except FileNotFoundError:
     print(f"Visit https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token")
     token = str(input("\n[+] Enter your token: "))
-    with open("anilist_man/token.txt", "w") as f:
+    with open("token.txt", "w") as f:
         f.write(token)
 
 base_url = "https://graphql.anilist.co"
@@ -32,7 +32,7 @@ headers = {
 }
 
 try:
-    with open("anilist_man/id.txt", "r") as f:
+    with open("id.txt", "r") as f:
         uid = f.read()
 except FileNotFoundError:
     print("[!] No user id found")
@@ -44,7 +44,7 @@ except FileNotFoundError:
     print(f"[+] User ID: {uid} | User Name: {username}")
     conf = str(input("\n[+] Do you want to save this user id? [y/n]: "))
     if conf == "y":
-        with open("anilist_man/id.txt", "w") as f:
+        with open("id.txt", "w") as f:
             f.write(str(uid))
     else:
         print("[!] User id not saved")
@@ -61,20 +61,20 @@ class RefreshFunc():
         token = str(input("\n[+] Enter your token: "))
         # Delete token.txt if it exists
         try:
-            os.remove("anilist_man/token.txt")
+            os.remove("token.txt")
         except FileNotFoundError:
             pass
-        with open("anilist_man/token.txt", "w") as f:
+        with open("token.txt", "w") as f:
             f.write(token)
 
     def refreshUid():
         uid = str(input("\n[+] Enter your user id: "))
         # Delete token.txt if it exists
         try:
-            os.remove("anilist_man/id.txt")
+            os.remove("id.txt")
         except FileNotFoundError:
             pass
-        with open("anilist_man/id.txt", "w") as f:
+        with open("id.txt", "w") as f:
             f.write(uid)
 
 @app.command()
