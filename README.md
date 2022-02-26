@@ -18,9 +18,10 @@
 
 ## Why?
 
+`anilist-man` is a tool which can
 - Easily update progress in few steps
 - Remove the hassle of finding via search by chapter
-- Custom name for better user friendly and easier to navigate
+- Has custom name for better user friendly and easier to navigate
 
 ---
 
@@ -29,7 +30,7 @@
 <p align="left">
   <img src="img/pip.png" alt="Pip" width="500">
 </p>
----
+
 
 ## Usage
 
