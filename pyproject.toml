@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "anilist-man"
-version = "0.3.5"
+version = "0.3.6"
 description = ""
 authors = ["Mini"]
 readme = "README.md"
