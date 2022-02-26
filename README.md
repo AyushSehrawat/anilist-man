@@ -41,8 +41,9 @@
 
 #### Todo
 
+- [x] Register on pypi ( python main.py -> some_command )
 - [ ] Add more support and commands 
-- [ ] Register on pypi ( python main.py -> some_command )
+- [ ] Fix saving of file issue
 
 #### Usage of code
 If you want to use this code , you can use it in your project but you must give credit to this repo.
