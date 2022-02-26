@@ -32,18 +32,18 @@ class QueryFunctions():
         resp = s.post(base_url, json={'query': query, 'variables': variables}, headers=headers)
         return resp.json()
 
-    def updateMangaStats(query, headers, listEntryId : int, progress : int):
+    def soonMangaStats(query, headers, userid):
         variables = {
-            "listEntryId" : listEntryId,
-            "updated_chap" : progress
+            "userId" : userid,
         }
         query = query
         resp = s.post(base_url, json={'query': query, 'variables': variables}, headers=headers)
         return resp.json()
 
-    def soonMangaStats(query, headers, userid):
+    def updateMangaStats(query, headers, listEntryId : int, progress : int):
         variables = {
-            "userId" : userid,
+            "listEntryId" : listEntryId,
+            "updated_chap" : progress
         }
         query = query
         resp = s.post(base_url, json={'query': query, 'variables': variables}, headers=headers)

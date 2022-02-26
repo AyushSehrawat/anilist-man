@@ -14,7 +14,7 @@ from anilist_man.queries import queryUpdateManga
 from anilist_man.query_func import QueryFunctions
 
 app = typer.Typer()
-#Print all files in data folder
+
 try:
     with open("token.txt", "r") as f:
         token = f.read()
@@ -55,7 +55,7 @@ except FileNotFoundError:
         sys.exit()
 
 uid = int(uid)
-print(f"[+] User ID: {uid}")
+
 class RefreshFunc():
     def __init__(self):
         pass
@@ -87,9 +87,63 @@ def user(user_name: Optional[str] = typer.Option(None, "--user", "-u", help="Tel
         user_name = str(input("[+] Enter user name: "))
     query = queryUser
     resp = QueryFunctions.getUser(query, headers, user_name)
-    username = resp["data"]["User"]["name"]
-    uid = resp["data"]["User"]["id"]
-    print(f"[+] User ID: {uid} | User Name: {username}")
+    try:
+        username = resp["data"]["User"]["name"]
+        uid = resp["data"]["User"]["id"]
+        print(f"[+] User ID: {uid} | User Name: {username}")
+    except KeyError:
+        print(f"[!] User {user_name} not found")
+
+@app.command()
+def c_refresh_token():
+    RefreshFunc.refreshToken()
+    sys.exit()
+
+@app.command()
+def c_refresh_uid():
+    RefreshFunc.refreshUid()
+    sys.exit()
+
+@app.command()
+def manga(id : Optional[int] = typer.Option(None, "--manga", "-m", help="Get info about manga via its ID")):
+    if id == None:
+        id = int(input("[+] Enter Manga ID: "))
+    query = queryManga
+    resp = QueryFunctions.getManga(query, headers, id)
+    try:
+        title = resp["data"]["Media"]["title"]["romaji"]
+        print(f"[+] Manga ID: {id} | Manga Title: {title}")
+    except KeyError:
+        print(f"[!] Manga ID {id} not found")
+
+@app.command()
+def manga_collection(user_id: Optional[int] = typer.Option(None, "--mangacurrent", "-mc", help="Get your `current` manga collection")):
+    if user_id == None:
+        user_id = int(uid)
+    query = queryMangaCollection
+    resp = QueryFunctions.getMangaStats(query, headers, user_id)
+    try:
+        mangaList = resp["data"]["MediaListCollection"]["lists"][0]["entries"]
+        print(f"Total Current Manga: {len(mangaList)}")
+
+        for m in mangaList:
+            index = len(mangaList) - mangaList.index(m)
+            if index < 10:
+                index = "0" + str(index)
+            else:
+                index = str(index)
+            list_id = m["id"]
+            romanji = m["media"]["title"]["romaji"]
+            english = m["media"]["title"]["english"]
+            progress = m['progress']
+            if english is None:
+                print(f"{index}. {romanji} | Progress: {progress} | List ID: {list_id}")
+            else:
+                print(f"{index}. {romanji} ({english}) | Progress: {progress} | List ID: {list_id}")
+
+        print("\n")
+    except:
+        print("[!] Something went wrong")
 
 if __name__ == "__main__":
     app()
