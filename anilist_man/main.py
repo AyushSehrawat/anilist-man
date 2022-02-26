@@ -39,15 +39,19 @@ except FileNotFoundError:
     c1 = str(input("\n[+] Enter your User Name: "))
     query = queryUser
     resp = QueryFunctions.getUser(query, headers, c1)
-    username = resp["data"]["User"]["name"]
-    uid = resp["data"]["User"]["id"]
-    print(f"[+] User ID: {uid} | User Name: {username}")
-    conf = str(input("\n[+] Do you want to save this user id? [y/n]: "))
-    if conf == "y":
-        with open("id.txt", "w") as f:
-            f.write(str(uid))
-    else:
-        print("[!] User id not saved")
+    try:
+        username = resp["data"]["User"]["name"]
+        uid = resp["data"]["User"]["id"]
+        print(f"[+] User ID: {uid} | User Name: {username}")
+        conf = str(input("\n[+] Do you want to save this user id? [y/n]: "))
+        if conf == "y":
+            with open("id.txt", "w") as f:
+                f.write(str(uid))
+        else:
+            print("[!] User id not saved")
+            sys.exit()
+    except KeyError:
+        print(f"[!] User {c1} not found")
         sys.exit()
 
 uid = int(uid)
