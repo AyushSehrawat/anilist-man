@@ -26,10 +26,9 @@
 
 ## Installation
 
-```shell
-pip3 install anilist-man
-```
-
+<p align="left">
+  <img src="img/pip.png" alt="Pip" width="500">
+</p>
 ---
 
 ## Usage
