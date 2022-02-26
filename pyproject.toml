@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "anilist-man"
+version = "0.2.7"
+description = ""
+authors = ["Mini"]
+readme = "README.md"
+
+packages = [
+    { include = "anilist_man" },
+    { include = "anilist_man/**/*.py" },
+]
+include = ["anilist_man/custom.json"]
+
+[tool.poetry.scripts]
+anilist-man = "anilist_man.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+typer = {extras = ["all"], version = "^0.4.0"}
+requests = "^2.27.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
