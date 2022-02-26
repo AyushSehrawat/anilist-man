@@ -34,8 +34,10 @@
 
 ## Usage
 
+<p align="left">
+  <img src="img/usage.png" alt="Pip" width="500">
+</p>
 
----
 
 #### Todo
 
