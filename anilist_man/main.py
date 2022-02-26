@@ -108,6 +108,8 @@ def refresh_uid():
 def manga(id : Optional[int] = typer.Option(None, "--manga", "-m", help="Get info about manga via its ID")):
     if id == None:
         id = int(input("[+] Enter Manga ID: "))
+        if id == 0:
+            sys.exit()
     query = queryManga
     resp = QueryFunctions.getManga(query, headers, id)
     try:
