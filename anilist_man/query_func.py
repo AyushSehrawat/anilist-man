@@ -26,7 +26,7 @@ class QueryFunctions():
 
     def getMangaStats(query, headers, userid):
         variables = {
-            "userId" : user,
+            "userId" : userid,
         }
         query = query
         resp = s.post(base_url, json={'query': query, 'variables': variables}, headers=headers)

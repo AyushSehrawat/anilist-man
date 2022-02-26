@@ -95,12 +95,12 @@ def user(user_name: Optional[str] = typer.Option(None, "--user", "-u", help="Tel
         print(f"[!] User {user_name} not found")
 
 @app.command()
-def c_refresh_token():
+def refresh_token():
     RefreshFunc.refreshToken()
     sys.exit()
 
 @app.command()
-def c_refresh_uid():
+def refresh_uid():
     RefreshFunc.refreshUid()
     sys.exit()
 
@@ -117,7 +117,7 @@ def manga(id : Optional[int] = typer.Option(None, "--manga", "-m", help="Get inf
         print(f"[!] Manga ID {id} not found")
 
 @app.command()
-def manga_collection(user_id: Optional[int] = typer.Option(None, "--mangacurrent", "-mc", help="Get your `current` manga collection")):
+def mc(user_id: Optional[int] = typer.Option(None, "--mangacurrent", "-mc", help="Get your `current` manga collection")):
     if user_id == None:
         user_id = int(uid)
     query = queryMangaCollection
