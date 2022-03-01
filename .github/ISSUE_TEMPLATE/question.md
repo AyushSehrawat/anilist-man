@@ -1,5 +1,5 @@
 ---
-name: Question
+name: ❓Question
 about: Question related issue
 title: ''
 labels: question
