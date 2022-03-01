@@ -1,10 +1,10 @@
 # Anilist Man
 
 <p align="left">
-  <img src="https://repository-images.githubusercontent.com/463782270/36ac76f6-ad08-486a-94ff-b1b2a082f95b" alt="Banner" width="790">
+  <img src="https://repository-images.githubusercontent.com/463782270/36ac76f6-ad08-486a-94ff-b1b2a082f95b" alt="Banner" width="792">
 </p>
 
-`anilist-man` python command-line tool for managing your data on [AniList](https://anilist.co) , made by [@ayushsehrawat](https://github.com/AyushSehrawat) in Typer.
+`anilist-man` : python command-line tool for managing your data on [AniList](https://anilist.co) , made by [@ayushsehrawat](https://github.com/AyushSehrawat) in Typer.
 
 ---
 
@@ -28,22 +28,23 @@
 ## Installation
 
 <p align="left">
-  <img src="img/pip.png" alt="Pip" width="500">
+  <img src="https://github.com/minihut/anilist-man/raw/main/img/pip.png" alt="Pip" width="500">
 </p>
 
 
 ## Usage
 
 <p align="left">
-  <img src="img/usage.png" alt="Pip" width="500">
+  <img src="https://github.com/minihut/anilist-man/raw/main/img/usage.png" alt="CMD" width="500">
 </p>
 
 
 #### Todo
 
 - [x] Register on pypi ( python main.py -> some_command )
+- [ ] Fix `--` not in cli ( due to some issue not showing )
 - [ ] Add more support and commands 
 - [ ] Fix saving of file issue
 
 #### Usage of code
-If you want to use this code , you can use it in your project but you must give credit to this repo.
+Usage of code for personal use ( editing , etc ) is allowed but user should give credits to this repository
