@@ -3,7 +3,9 @@ import os
 import sys
 import re
 
+import webbrowser
 from typing import Optional
+from typing import List
 
 import typer
 import requests
@@ -11,6 +13,7 @@ import requests
 from anilist_man.queries import queryUser, queryManga, queryMangaCollection, querySoonMMangaCollection
 from anilist_man.queries import queryUpdateManga
 
+from anilist_man.subFunc import subFunc
 from anilist_man.queryFunc import QueryFunctions
 
 app = typer.Typer()
@@ -34,7 +37,10 @@ if folder_check == True:
     else:
         # Make a new folder in location
         dat_dir = os.path.join(location, 'anilist_man')
-        os.mkdir(dat_dir)
+        try:
+            os.mkdir(dat_dir)
+        except PermissionError:
+            print(f"Unable to create folder {dat_dir}")
         
 token_dat_dir_file = os.path.join(dat_dir, 'token.txt')
 id_dat_dir_file = os.path.join(dat_dir, 'id.txt')
@@ -43,10 +49,25 @@ try:
     with open(token_dat_dir_file, "r") as f:
         token = f.read()
 except FileNotFoundError:
-    print(f"Visit https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token")
-    token = str(input("\n[+] Enter your token: "))
-    with open(token_dat_dir_file, "w") as f:
-        f.write(token)
+    try:
+        webbrowser.open("https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token",new=0,autoraise=True)
+        print(f"Visit https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token")
+        try:
+            token = str(input("\n[+] Enter your token: "))
+            if token == "" or token == None or token == " " or token.strip() == "":
+                print("[-] Token is empty")
+                sys.exit()
+        except BaseException:
+            print("\n[-] Invalid token")
+            sys.exit()
+        try:
+            with open(token_dat_dir_file, "w") as f:
+                f.write(token)
+        except FileNotFoundError or PermissionError:
+            print("[-] File not found or permission denied.")
+            sys.exit()
+    except KeyboardInterrupt:
+        sys.exit()
 
 base_url = "https://graphql.anilist.co"
 headers = {
@@ -59,8 +80,14 @@ try:
     with open(id_dat_dir_file, "r") as f:
         uid = f.read()
 except FileNotFoundError:
-    print("[!] No user id found")
-    c1 = str(input("\n[+] Enter your User Name: "))
+    print(f"[!] No user id found in {dat_dir}")
+    try:
+        c1 = str(input("\n[+] Enter your User Name: "))
+        if c1 == "" or c1 == None or c1 == " " or c1.strip() == "":
+            print("[-] User Name is empty")
+            sys.exit()
+    except BaseException or KeyboardInterrupt:
+        sys.exit()
     query = queryUser
     resp = QueryFunctions.getUser(query, headers, c1)
     try:
@@ -68,9 +95,16 @@ except FileNotFoundError:
         uid = resp["data"]["User"]["id"]
         print(f"[+] User ID: {uid} | User Name: {username}")
         conf = str(input("\n[+] Do you want to save this user id? [y/n]: "))
-        if conf == "y":
-            with open(id_dat_dir_file, "w") as f:
-                f.write(str(uid))
+        if conf == "" or conf == None or conf == " " or conf.strip() == "":
+            print("[-] Invalid input")
+            sys.exit()
+        if conf == "y" or conf == "Y":
+            try:
+                with open(id_dat_dir_file, "w") as f:
+                    f.write(str(uid))
+            except FileNotFoundError or PermissionError:
+                print("[-] File not found or permission denied.")
+                sys.exit()
         else:
             print("[!] User id not saved")
             sys.exit()
@@ -80,71 +114,62 @@ except FileNotFoundError:
 
 uid = int(uid)
 
-@app.command()
-def user(user_name: Optional[str] = typer.Option(None, "--user", "-u", help="Tell Info About User")):
-    if user_name == None:
-        user_name = str(input("[+] Enter user name: "))
+@app.command(short_help="Get user's name and id")
+def user(user: Optional[str] = typer.Option(..., "--user", "-u", help="Information on the provided user")):
+    if user == None or user == "" or user == " " or user.strip() == "":
+        print("[-] Invalid user")
+        sys.exit()
     query = queryUser
-    resp = QueryFunctions.getUser(query, headers, user_name)
+    resp = QueryFunctions.getUser(query, headers, user)
     try:
         username = resp["data"]["User"]["name"]
         uid = resp["data"]["User"]["id"]
         print(f"[+] User ID: {uid} | User Name: {username}")
     except KeyError:
-        print(f"[!] User {user_name} not found")
+        print(f"[!] User {user} not found")
+        sys.exit()
 
-@app.command()
-def refresh_token():
-    RefreshFunc.refreshToken()
-    sys.exit()
-
-@app.command()
-def refresh_uid():
-    RefreshFunc.refreshUid()
-    sys.exit()
-
-@app.command()
-def manga(id : Optional[int] = typer.Option(None, "--manga", "-m", help="Get info about manga via its ID")):
-    if id == None:
-        id = int(input("[+] Enter Manga ID: "))
-        if id == 0:
-            sys.exit()
-    query = queryManga
-    resp = QueryFunctions.getManga(query, headers, id)
-    try:
-        title = resp["data"]["Media"]["title"]["romaji"]
-        print(f"[+] Manga ID: {id} | Manga Title: {title}")
-    except KeyError:
-        print(f"[!] Manga ID {id} not found")
-
-@app.command()
-def mc(user_id: Optional[int] = typer.Option(None, "--mangacurrent", "-mc", help="Get your `current` manga collection")):
-    if user_id == None:
-        user_id = int(uid)
+@app.command(short_help="Get your current manga collection")
+def manga():
     query = queryMangaCollection
-    resp = QueryFunctions.getMangaStats(query, headers, user_id)
+    subFunc.mangaList(query, headers, uid)
+
+@app.command(short_help="Update any manga in your current manga collection")
+def update():
+    query1 = queryMangaCollection
+    subFunc.mangaList(query1, headers, uid)
+
     try:
-        mangaList = resp["data"]["MediaListCollection"]["lists"][0]["entries"]
-        print(f"Total Current Manga: {len(mangaList)}")
+        index = int(input("[+] Enter index of manga: "))
+    except ValueError or KeyboardInterrupt:
+        print("[-] Error")
+        sys.exit()
 
-        for m in mangaList:
-            index = len(mangaList) - mangaList.index(m)
-            if index < 10:
-                index = "0" + str(index)
-            else:
-                index = str(index)
-            list_id = m["id"]
-            romanji = m["media"]["title"]["romaji"]
-            english = m["media"]["title"]["english"]
-            progress = m['progress']
-            if english is None:
-                print(f"{index}. {romanji} | Progress: {progress} | List ID: {list_id}")
-            else:
-                print(f"{index}. {romanji} ({english}) | Progress: {progress} | List ID: {list_id}")
+    query2 = queryUpdateManga
+    mangaList = QueryFunctions.getMangaStats(query1, headers, uid)
+    mangaList = mangaList["data"]["MediaListCollection"]["lists"][0]["entries"][::-1]
+    
 
-        print("\n")
-    except:
-        print("[!] Something went wrong")
+    if index not in range(len(mangaList)):
+        print("[-] Index out of range")
+    manga = mangaList[index - 1]
+    english = manga["media"]["title"]["english"]
+    romaji = manga["media"]["title"]["romaji"]
+    current_progress = manga["progress"]
+    print(f"[+] Updating {english} | ({romaji}) | {current_progress}")
+    listEntryId = manga["id"]
+
+    try:
+        progress = int(input("[+] Enter progress: "))
+    except ValueError or KeyboardInterrupt:
+        print("[-] Error")
+        sys.exit()
+
+    if progress == 0 or progress < 0:
+        print("[-] Progress cannot be 0 or less")
+    else:
+        QueryFunctions.updateMangaStats(query2, headers, listEntryId, progress)
+        print(f"[+] Updated {manga['media']['title']['romaji']} to {progress}")
 
 if __name__ == "__main__":
     app()

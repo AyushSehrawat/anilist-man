@@ -43,8 +43,9 @@
 
 - [x] Register on pypi ( python main.py -> some_command )
 - [ ] Fix `--` not in cli ( due to some issue not showing )
-- [ ] Add more support and commands 
-- [ ] Fix saving of file issue
+- [ ] Add more support and commands
+- [ ] Simply code
+- [x] Fix saving of file issue
 
 #### Usage of code
 Usage of code for personal use ( editing , etc ) is allowed but user should give credits to this repository
