@@ -11,17 +11,41 @@ import requests
 from anilist_man.queries import queryUser, queryManga, queryMangaCollection, querySoonMMangaCollection
 from anilist_man.queries import queryUpdateManga
 
-from anilist_man.query_func import QueryFunctions
+from anilist_man.queryFunc import QueryFunctions
 
 app = typer.Typer()
+home = os.path.expanduser('~')
+location = os.path.join(home, 'Documents')
+folder_check = os.path.isdir(location)
+
+if folder_check == False:
+    print(f"{location} does not exist.")
+    location = str(input("Please enter the location of your documents folder: "))
+    folder_check = os.path.isdir(location)
+    if folder_check == False:
+        print(f"{location} does not exist.")
+        sys.exit()
+
+if folder_check == True:
+    # Create new folder in location if it doesn't exist
+    if os.path.isdir(os.path.join(location, 'anilist_man')):
+        dat_dir = os.path.join(location, 'anilist_man')
+    
+    else:
+        # Make a new folder in location
+        dat_dir = os.path.join(location, 'anilist_man')
+        os.mkdir(dat_dir)
+        
+token_dat_dir_file = os.path.join(dat_dir, 'token.txt')
+id_dat_dir_file = os.path.join(dat_dir, 'id.txt')
 
 try:
-    with open("token.txt", "r") as f:
+    with open(token_dat_dir_file, "r") as f:
         token = f.read()
 except FileNotFoundError:
     print(f"Visit https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token")
     token = str(input("\n[+] Enter your token: "))
-    with open("token.txt", "w") as f:
+    with open(token_dat_dir_file, "w") as f:
         f.write(token)
 
 base_url = "https://graphql.anilist.co"
@@ -32,7 +56,7 @@ headers = {
 }
 
 try:
-    with open("id.txt", "r") as f:
+    with open(id_dat_dir_file, "r") as f:
         uid = f.read()
 except FileNotFoundError:
     print("[!] No user id found")
@@ -45,7 +69,7 @@ except FileNotFoundError:
         print(f"[+] User ID: {uid} | User Name: {username}")
         conf = str(input("\n[+] Do you want to save this user id? [y/n]: "))
         if conf == "y":
-            with open("id.txt", "w") as f:
+            with open(id_dat_dir_file, "w") as f:
                 f.write(str(uid))
         else:
             print("[!] User id not saved")
@@ -55,31 +79,6 @@ except FileNotFoundError:
         sys.exit()
 
 uid = int(uid)
-
-class RefreshFunc():
-    def __init__(self):
-        pass
-
-    def refreshToken():
-        print(f"Visit https://anilist.co/api/v2/oauth/authorize?client_id=7501&response_type=token")
-        token = str(input("\n[+] Enter your token: "))
-        # Delete token.txt if it exists
-        try:
-            os.remove("token.txt")
-        except FileNotFoundError:
-            pass
-        with open("token.txt", "w") as f:
-            f.write(token)
-
-    def refreshUid():
-        uid = str(input("\n[+] Enter your user id: "))
-        # Delete token.txt if it exists
-        try:
-            os.remove("id.txt")
-        except FileNotFoundError:
-            pass
-        with open("id.txt", "w") as f:
-            f.write(uid)
 
 @app.command()
 def user(user_name: Optional[str] = typer.Option(None, "--user", "-u", help="Tell Info About User")):

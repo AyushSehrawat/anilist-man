@@ -1,5 +1,6 @@
 token.txt
 id.txt
+just_a_check_file.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
