@@ -30,12 +30,10 @@ if folder_check == False:
         sys.exit()
 
 if folder_check == True:
-    # Create new folder in location if it doesn't exist
     if os.path.isdir(os.path.join(location, 'anilist_man')):
         dat_dir = os.path.join(location, 'anilist_man')
     
     else:
-        # Make a new folder in location
         dat_dir = os.path.join(location, 'anilist_man')
         try:
             os.mkdir(dat_dir)
@@ -170,6 +168,58 @@ def update():
     else:
         QueryFunctions.updateMangaStats(query2, headers, listEntryId, progress)
         print(f"[+] Updated {manga['media']['title']['romaji']} to {progress}")
+
+@app.command(short_help="Get search results from given number of chapters")
+def search(chapters : int, update: Optional[bool] = typer.Option(None, "--y/")):
+    query1 = queryMangaCollection
+    subFunc.mangaList(query1, headers, uid)
+    query = queryMangaCollection
+    mangalist = QueryFunctions.getMangaStats(query, headers, uid)
+    mangalist = mangalist["data"]["MediaListCollection"]["lists"][0]["entries"]
+    print("\n [+] Results are - ")
+    for m in mangalist:
+        if m["progress"] in range(chapters-5, chapters+5):
+            index = len(mangalist) - mangalist.index(m)
+            romaji = m["media"]["title"]["romaji"]
+            english = m["media"]["title"]["english"]
+            if english == None:
+                print(f"[{index}] {romaji} | {m['progress']}")
+            else:
+                print(f"[{index}] {english} | {m['progress']}")
+
+    if update == None:
+        return
+    else:
+        try:
+            index = int(input("\n[+] Enter index of manga: "))
+        except ValueError or KeyboardInterrupt:
+            print("[-] Error")
+            sys.exit()
+
+        if index not in range(len(mangalist)):
+            print("[-] Index out of range")
+        manga = mangalist[len(mangalist) - index]
+        english = manga["media"]["title"]["english"]
+        romaji = manga["media"]["title"]["romaji"]
+        current_progress = manga["progress"]
+        print(f"[+] Updating {english} | ({romaji}) | {current_progress}")
+        listEntryId = manga["id"]
+
+        try:
+            progress = int(input("[+] Enter progress: "))
+        except ValueError or KeyboardInterrupt:
+            print("[-] Error")
+            sys.exit()
+
+        if progress == 0 or progress < 0:
+            print("[-] Progress cannot be 0 or less")
+        else:
+            query2 = queryUpdateManga
+            QueryFunctions.updateMangaStats(query2, headers, listEntryId, progress)
+            print(f"[+] Updated {manga['media']['title']['romaji']} to {progress}")
+
+    
+
 
 if __name__ == "__main__":
     app()

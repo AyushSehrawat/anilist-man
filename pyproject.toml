@@ -1,11 +1,12 @@
 [tool.poetry]
 name = "anilist-man"
-version = "0.4.2"
+version = "0.4.3"
 description = "A command-line-tool for AniList"
 authors = ["Mini"]
 readme = "README.md"
 repository = "https://github.com/minihut/anilist-man"
 license = "LICENSE"
+keywords = ['anilist', 'anilist-cli', 'anilist-man', 'manga']
 
 packages = [
     { include = "anilist_man" },

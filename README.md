@@ -42,8 +42,8 @@
 #### Todo
 
 - [x] Register on pypi ( python main.py -> some_command )
-- [ ] Fix `--` not in cli ( due to some issue not showing )
-- [ ] Add more support and commands
+- [x] Fix `--` not in cli ( due to some issue not showing )
+- [x] Add more support and commands
 - [ ] Simply code
 - [x] Fix saving of file issue
 

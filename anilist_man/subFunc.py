@@ -22,6 +22,6 @@ class subFunc():
             english = m["media"]["title"]["english"]
             progress = m['progress']
             if english == None:
-                print(f"{index} {romaji} - {progress}")
+                print(f"[+] {index} {romaji} - {progress}")
             else:
-                print(f"{index} {english} - {progress}")
+                print(f"[+] {index} {english} - {progress}")
