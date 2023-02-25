@@ -1,5 +1,7 @@
 # Anilist Man
 
+**No more maintained , there maybe a rewrite in some other language in future. Also check https://github.com/AyushSehrawat/animanager , the better and web version of it.**
+
 <p align="left">
   <img src="https://repository-images.githubusercontent.com/463782270/36ac76f6-ad08-486a-94ff-b1b2a082f95b" alt="Banner" width="792">
 </p>
